@@ -1,4 +1,7 @@
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:flutter/physics.dart';
 import 'balls.dart';
 void main() {
   runApp(MyApp());
@@ -15,59 +18,119 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-class Quiz4 extends StatefulWidget {
+
+class Quiz4 extends StatelessWidget {
   const Quiz4({Key? key}) : super(key: key);
 
   @override
-  _Quiz4State createState() => _Quiz4State();
-}
-
-class _Quiz4State extends State<Quiz4> {
-  @override
   Widget build(BuildContext context) {
+    final fullscreenSize = MediaQuery.of(context).size;
+    final appBar = AppBar(
+      title: Text("Quiz4"),
+      centerTitle: true,
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Bouncing Balls"),
+      appBar: appBar,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        child: MainScreen(
+          screenSize: Size(fullscreenSize.width,fullscreenSize.height - appBar.preferredSize.height),
+        ),
       ),
-      body: MyWidget(),
     );
   }
 }
-class MyWidget extends StatefulWidget {
+
+class MainScreen extends StatefulWidget {
+  MainScreen({required this.screenSize, this.maximumRadius = 100});
+
+  final Size screenSize;
+  final double maximumRadius;
   @override
-  _MyWidgetState createState() => _MyWidgetState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
-  double posx = -100;
-  double posy = -100;
+  late AnimationController radiusController;
+  late Offset ballPosition;
 
-  void onTapDown(BuildContext context, TapDownDetails details) {
-    print('${details.globalPosition}');
-    final RenderBox box = context.findRenderObject() as RenderBox;
-    final Offset localOffset = box.globalToLocal(details.globalPosition);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    radiusController = AnimationController(
+        vsync: this,
+      duration: Duration(seconds: 1),
+      upperBound: widget.maximumRadius,
+    );
+    ballPosition = Offset.zero;
+  }
+
+  void onTapDown(TapDownDetails details){
+    radiusController.reset();
+    radiusController.forward();
+    final RenderBox referenceBox = context.findRenderObject() as RenderBox;
     setState(() {
-      posx = localOffset.dx;
-      posy = localOffset.dy;
+      ballPosition = referenceBox.globalToLocal(details.globalPosition);
     });
+  }
+  void onTapUp(TapUpDetails details){
+    final RenderBox referenceBox = context.findRenderObject() as RenderBox;
+    setState(() {
+      ballPosition = referenceBox.globalToLocal(details.globalPosition);
+    });
+    radiusController.stop();
+  }
+  void onPanStart(DragStartDetails details){
+    print("pan satrt");
+    if(!radiusController.isAnimating && radiusController.value<widget.maximumRadius){
+      radiusController.reset();
+      radiusController.forward();
+    }
+    final RenderBox referenceBox = context.findRenderObject() as RenderBox;
+    setState(() {
+      ballPosition = referenceBox.globalToLocal(details.globalPosition);
+    });
+  }
+
+  void onPanUpdate(DragUpdateDetails details){
+    print("pan update");
+    final RenderBox referenceBox = context.findRenderObject() as RenderBox;
+    setState(() {
+      ballPosition = referenceBox.globalToLocal(details.globalPosition);
+    });
+  }
+
+  void onPanEnd(DragEndDetails details){
+    print("pan end");
+    radiusController.stop();
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (TapDownDetails details) => onTapDown(context, details),
-      child: new Stack(fit: StackFit.expand, children: <Widget>[
-        new Container(color: Colors.deepPurpleAccent),
-        new Positioned(
-          child: CustomPaint(
-            painter: Balls(),
+      onTapDown: onTapDown,
+      onTapUp: onTapUp,
+      onPanStart: onPanStart,
+      onPanUpdate: onPanUpdate,
+      onPanEnd: onPanEnd,
+      child: Container(
+        child: CustomPaint(
+          foregroundPainter: Balls(
+            position: ballPosition,
+            radiusController: radiusController,
           ),
-          left: posx,
-          top: posy,
-        )
-      ]),
+          // painter: Balls(
+          //   position: ballPosition,
+          //   radiusController: radiusController,
+          // ),
+        ),
+      ),
     );
   }
 }
+
+
 
