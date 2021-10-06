@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class Balls extends CustomPainter{
-  Balls({required this.radiusController, required this.position});
+  Balls({required this.radiusController, required this.position}):super(repaint: radiusController);
 
   final AnimationController radiusController;
   final Offset position;
+
 
 
   @override
@@ -13,6 +14,7 @@ class Balls extends CustomPainter{
     var paint1 = Paint()
         ..color = Colors.deepOrange
         ..style = PaintingStyle.fill;
+
     canvas.drawCircle(position, radiusController.value, paint1);
   }
 

@@ -44,7 +44,6 @@ class Quiz4 extends StatelessWidget {
 
 class MainScreen extends StatefulWidget {
   MainScreen({required this.screenSize, this.maximumRadius = 100});
-
   final Size screenSize;
   final double maximumRadius;
   @override
@@ -52,7 +51,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
-
   late AnimationController radiusController;
   late Offset ballPosition;
 
@@ -61,14 +59,22 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
     radiusController = AnimationController(
-        vsync: this,
+      vsync: this,
       duration: Duration(seconds: 1),
       upperBound: widget.maximumRadius,
     );
     ballPosition = Offset.zero;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    radiusController.dispose();
+    super.dispose();
+  }
+
   void onTapDown(TapDownDetails details){
+    print("tap down");
     radiusController.reset();
     radiusController.forward();
     final RenderBox referenceBox = context.findRenderObject() as RenderBox;
@@ -118,14 +124,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       onPanEnd: onPanEnd,
       child: Container(
         child: CustomPaint(
-          foregroundPainter: Balls(
+          painter: Balls(
             position: ballPosition,
             radiusController: radiusController,
           ),
-          // painter: Balls(
-          //   position: ballPosition,
-          //   radiusController: radiusController,
-          // ),
         ),
       ),
     );
