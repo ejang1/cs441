@@ -52,7 +52,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   late AnimationController radiusController;
+  late AnimationController ballMovementController;
   late Offset ballPosition;
+  late double initialHeight;
+  late double ballRadius;
+  List<CustomPaint> balllist = [];
 
   @override
   void initState() {
@@ -63,14 +67,52 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       duration: Duration(seconds: 1),
       upperBound: widget.maximumRadius,
     );
+    radiusController.addListener(() {
+      setState(() {
+        ballRadius = radiusController.value;
+      });
+    });
+    ballMovementController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds:5),
+    );
+    ballMovementController.addListener(() {
+      setState(() {
+        double ballheightp = initialHeight+ballMovementController.value*(widget.screenSize.height-25-initialHeight-ballRadius);
+        ballPosition = Offset(ballPosition.dx,ballheightp);
+      });
+    });
+    ballMovementController.addStatusListener((status) {
+      if(status == AnimationStatus.completed){
+      }
+    });
     ballPosition = Offset.zero;
+    initialHeight = 0;
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     radiusController.dispose();
+    ballMovementController.dispose();
     super.dispose();
+  }
+
+  void addingNewBall(){
+    balllist.add(new CustomPaint(
+        size: widget.screenSize,
+        painter: Balls(
+          position: ballPosition,
+          radiusController: radiusController,
+        ),
+    ),);
+  }
+
+  void startFall(){
+    setState(() {
+      initialHeight = ballPosition.dy;
+    });
+      ballMovementController.animateWith(GravitySimulation(9.8, 0, 1.001, 0));
   }
 
   void onTapDown(TapDownDetails details){
@@ -88,6 +130,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       ballPosition = referenceBox.globalToLocal(details.globalPosition);
     });
     radiusController.stop();
+    if(radiusController.value > 0){
+      startFall();
+    }
   }
   void onPanStart(DragStartDetails details){
     print("pan satrt");
@@ -112,6 +157,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   void onPanEnd(DragEndDetails details){
     print("pan end");
     radiusController.stop();
+    startFall();
   }
 
   @override
@@ -122,13 +168,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       onPanStart: onPanStart,
       onPanUpdate: onPanUpdate,
       onPanEnd: onPanEnd,
-      child: Container(
-        child: CustomPaint(
-          painter: Balls(
-            position: ballPosition,
-            radiusController: radiusController,
-          ),
-        ),
+      child: CustomPaint(
+        painter: Balls(radiusController: radiusController,position: ballPosition),
       ),
     );
   }
