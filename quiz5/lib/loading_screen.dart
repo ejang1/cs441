@@ -46,7 +46,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       print(e);
     }
     Navigator.push(context, MaterialPageRoute(builder: (context){
-      return MapScreen(myloclat: myLocationLat, myloclong: myLocationLong,);
+      return MapScreen(myloclat: myLocationLat, myloclong: myLocationLong);
     }));
 
     //print(myLocationLat);
