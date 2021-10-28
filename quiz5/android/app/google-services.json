@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "860618606479",
+    "project_id": "huntersgame-bc37b",
+    "storage_bucket": "huntersgame-bc37b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860618606479:android:2cc3dcffcd41afa819adfa",
+        "android_client_info": {
+          "package_name": "com.example.quiz5"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860618606479-9sorq0cgv52790nipdimdff207nntj6c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB34jXkSoZWjc7fW303zKBVURZfEIaGN2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860618606479-9sorq0cgv52790nipdimdff207nntj6c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

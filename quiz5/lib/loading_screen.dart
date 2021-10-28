@@ -45,10 +45,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
     }catch(e){
       print(e);
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context){
-      return MapScreen(myloclat: myLocationLat, myloclong: myLocationLong);
-    }));
-
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
+      return MapScreen(myLocationLat, myLocationLong);
+    }), (route) => false);
+    
     //print(myLocationLat);
     //print(myLocationLong);
   }
