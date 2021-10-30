@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:quiz5/loading_screen.dart';
-import 'map_screen.dart';
-
+import 'login_screen.dart';
 void main() {
   runApp(MyApp());
 }
@@ -13,9 +10,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'HuntersGame',
       theme: ThemeData.dark(),
-      home: LoadingScreen(),
+      home: LoginScreen(),
     );
   }
 }
