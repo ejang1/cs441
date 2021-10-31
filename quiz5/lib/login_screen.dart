@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'blocs/auth_bloc.dart';
 import 'loading_screen.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:provider/provider.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -12,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+    var authBloc = Provider.of<AuthBloc>(context);
     return Container(
       child: Center(
         child: Column(
@@ -24,8 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SignInButton(
                 Buttons.Facebook,
-                onPressed: ()=>Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
-                  return LoadingScreen();}), (route) => false),
+                onPressed: () => authBloc.loginFacebook(),
             ),
             SignInButton(
                 Buttons.Twitter,
